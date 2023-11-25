@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{ prelude::*, sprite::MaterialMesh2dBundle };
 use bevy_egui::{egui::{self}, EguiContexts, EguiPlugin};
 
 fn main() {
@@ -15,18 +15,22 @@ struct Ball {
     speed: Vec3,
 }
 
-fn setup(mut commands: Commands) {
+fn setup(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>
+) {
+    
     commands.spawn(Camera2dBundle::default());
     // Aggiungi la palla
-    commands.spawn(SpriteBundle {
-        sprite: Sprite {
-            custom_size: Some(Vec2::new(30.0, 30.0)),
-            color: Color::rgb(1.0, 0.5, 0.5),
-            ..Default::default()
-        },
-        ..Default::default()
+    // Circle
+    commands.spawn(MaterialMesh2dBundle {
+        mesh: meshes.add(shape::Circle::new(15.).into()).into(),
+        material: materials.add(ColorMaterial::from(Color::RED)),
+        transform: Transform::from_translation(Vec3::new(-150., 0., 0.)),
+        ..default()
     })
-    .insert(Ball { speed: Vec3::new(100.0, 100.0, 0.0) });
+    .insert(Ball { speed: Vec3::new(200.0, 100.0, 0.0) });
 
     // Aggiungi qui eventualmente altri elementi
 }
@@ -63,8 +67,8 @@ fn ui_system(mut egui_context: EguiContexts, mut query: Query<&mut Ball>) {
             let mut speed_y_abs = ball.speed.y.abs();
 
             // Mostra gli slider per i valori assoluti della velocità
-            ui.add(egui::Slider::new(&mut speed_x_abs, 0.0..=1000.0).text("Velocità X"));
-            ui.add(egui::Slider::new(&mut speed_y_abs, 0.0..=1000.0).text("Velocità Y"));
+            ui.add(egui::Slider::new(&mut speed_x_abs, 0.0..=10000.0).text("Velocità X"));
+            ui.add(egui::Slider::new(&mut speed_y_abs, 0.0..=10000.0).text("Velocità Y"));
 
             // Aggiorna la velocità mantenendo il segno originale
             ball.speed.x = ball.speed.x.signum() * speed_x_abs;
