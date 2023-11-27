@@ -12,7 +12,7 @@ struct SquareBounds {
 
 fn main() {
     App::new()
-        // .insert_resource(ClearColor(Color::rgb(0.9, 0.9, 0.9)))
+        .insert_resource(ClearColor(Color::rgb(0.9, 0.9, 0.9)))
         // Aggiungi la resource SquareBounds
         .insert_resource(SquareBounds {
             left: -300.0,   // metà di 600
